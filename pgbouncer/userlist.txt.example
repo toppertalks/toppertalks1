@@ -1,0 +1,16 @@
+; PgBouncer userlist — VPS / bare-metal deployment only.
+; Docker deployment uses the edoburu/pgbouncer image with env vars instead.
+;
+; Format:  "username" "md5HASH"
+;
+; Generate the MD5 hash with:
+;   printf "md5%s" "$(printf 'YOUR_PASSWORDpostgres' | md5sum | awk '{print $1}')"
+;
+; Example: if username=postgres and password=hunter2, run:
+;   printf "md5%s" "$(printf 'hunter2postgres' | md5sum | awk '{print $1}')"
+;   → md5b7ef3e1b2a7e5a19bae33f12c2e0d7f2
+;
+; Then replace the placeholder below with the output and restart PgBouncer.
+; NEVER commit this file with a real password.
+
+"postgres" "md5REPLACE_WITH_HASH"

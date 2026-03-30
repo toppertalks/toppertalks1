@@ -1,0 +1,11 @@
+{
+  "name": "toppertalks",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Use: npm run backend (terminal 1) then npm run frontend (terminal 2)'",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "install:all": "cd backend && npm install && cd ../frontend && npm install"
+  }
+}

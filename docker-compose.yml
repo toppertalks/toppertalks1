@@ -1,0 +1,149 @@
+# =============================================================================
+# TopperTalks — Docker Compose (Production-grade)
+#
+# Architecture:
+#   postgres → pgbouncer → fastapi-backend
+#
+# PgBouncer sits between FastAPI and Postgres. FastAPI connects to port 6432
+# (PgBouncer), and PgBouncer maintains a fixed small pool of real connections
+# to port 5432 (Postgres), multiplexing thousands of app connections over them.
+#
+# Usage:
+#   cp .env.example .env       # fill in POSTGRES_PASSWORD and FIREBASE_PROJECT_ID
+#   docker compose up -d
+# =============================================================================
+
+services:
+
+  # ── 1. PostgreSQL ────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: toppertalks
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d toppertalks"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Postgres port is NOT exposed to the host; only PgBouncer talks to it.
+
+  # ── 2. PgBouncer ─────────────────────────────────────────────────────────────
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    restart: unless-stopped
+    environment:
+      # Connection to real Postgres (internal Docker network, not public)
+      DATABASE_URL: "postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/toppertalks"
+
+      # Transaction pooling: connection held only for one transaction's lifetime.
+      # Required for stateless async frameworks (FastAPI + asyncpg).
+      POOL_MODE: transaction
+
+      # How many real Postgres connections PgBouncer keeps alive.
+      DEFAULT_POOL_SIZE: "25"
+      MIN_POOL_SIZE: "5"
+      RESERVE_POOL_SIZE: "5"
+
+      # Max client-side connections from FastAPI → PgBouncer.
+      # This is cheap (in-memory), so set it high.
+      MAX_CLIENT_CONN: "1000"
+
+      # Resets session-level state before handing a connection back to the pool.
+      SERVER_RESET_QUERY: "DISCARD ALL"
+
+      # asyncpg sends extra_float_digits in startup; tell PgBouncer to ignore it.
+      IGNORE_STARTUP_PARAMETERS: extra_float_digits
+
+      SERVER_IDLE_TIMEOUT: "600"
+      AUTH_TYPE: md5
+    ports:
+      # Expose PgBouncer to the host (or your load balancer) on 6432.
+      # Your .env DATABASE_URL must point to this port.
+      - "6432:6432"
+    networks:
+      - internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── 3. Redis ─────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # Persist data across container restarts so cached data survives deploys.
+    # AOF (append-only file) is the most durable persistence option.
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Redis port is NOT exposed to the host; only the backend talks to it.
+
+  # ── 4. FastAPI Backend ───────────────────────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      # Connects to PgBouncer (Primary), NOT directly to Postgres
+      DATABASE_URL: "postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@pgbouncer:6432/toppertalks"
+
+      # Read Replica — point to PgBouncer in front of your replica node.
+      # Leave unset (or empty) to fall back to the Primary for all reads.
+      # Example when you add a replica container named pgbouncer-replica:
+      # DATABASE_URL_READER: "postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@pgbouncer-replica:6432/toppertalks"
+      DATABASE_URL_READER: "${DATABASE_URL_READER:-}"
+
+      # Redis — connects to the internal Redis service
+      REDIS_URL: "redis://redis:6379/0"
+
+      FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+
+      # CORS: comma-separated list of allowed production origins
+      ALLOWED_ORIGINS: "${ALLOWED_ORIGINS:-http://localhost:3000}"
+
+      # Sentry: leave empty to disable error tracking
+      SENTRY_DSN: "${SENTRY_DSN:-}"
+
+      # Rate limiting (requests per minute per IP)
+      RATE_LIMIT_PER_MINUTE: "${RATE_LIMIT_PER_MINUTE:-120}"
+
+      HOST: "0.0.0.0"
+      PORT: "4000"
+    ports:
+      - "4000:4000"
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:4000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    depends_on:
+      pgbouncer:
+        condition: service_started
+      redis:
+        condition: service_healthy
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
