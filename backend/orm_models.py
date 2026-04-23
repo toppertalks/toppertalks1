@@ -1,4 +1,3 @@
-from datetime import datetime
 from sqlalchemy import (
     BigInteger,
     Boolean,
@@ -10,7 +9,7 @@ from sqlalchemy import (
     Text,
     TIMESTAMP,
 )
-from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
