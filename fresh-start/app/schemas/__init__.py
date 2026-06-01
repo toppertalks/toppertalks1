@@ -1,0 +1,31 @@
+from app.schemas.auth import (
+    ChangePasswordRequest,
+    ForgotPasswordRequest,
+    GoogleAuthCallback,
+    GoogleAuthUrlResponse,
+    LoginRequest,
+    LogoutRequest,
+    MessageResponse,
+    RefreshRequest,
+    RegisterRequest,
+    ResetPasswordRequest,
+    TokenResponse,
+    UserPublic,
+    VerifyEmailRequest,
+)
+
+__all__ = [
+    "ChangePasswordRequest",
+    "ForgotPasswordRequest",
+    "GoogleAuthCallback",
+    "GoogleAuthUrlResponse",
+    "LoginRequest",
+    "LogoutRequest",
+    "MessageResponse",
+    "RefreshRequest",
+    "RegisterRequest",
+    "ResetPasswordRequest",
+    "TokenResponse",
+    "UserPublic",
+    "VerifyEmailRequest",
+]

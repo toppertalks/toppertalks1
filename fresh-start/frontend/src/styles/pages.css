@@ -1,0 +1,575 @@
+/* ── Page base ── */
+.page {
+  min-height: 100vh;
+  background: #0d1117;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 72px;
+}
+
+.page-centered {
+  min-height: 100vh;
+  background: #0d1117;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+}
+
+/* ── Header ── */
+.header {
+  background: linear-gradient(180deg, #13192b 0%, #0d1117 100%);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+  padding: 14px 16px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(12px);
+}
+
+/* ── Logo ── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 60%, #a78bfa 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.55);
+  flex-shrink: 0;
+}
+
+.logo-text {
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.logo-title {
+  font-weight: 800;
+  font-size: 20px;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+
+.logo-title-accent {
+  font-weight: 800;
+  font-size: 20px;
+  background: linear-gradient(90deg, #818cf8, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+
+.logo-subtitle {
+  font-size: 9px;
+  color: #94a3b8;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* ── Hero Banner ── */
+.hero-banner {
+  margin: 12px 14px 4px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hero-banner-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.hero-banner-sub {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.hero-banner-btn {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(99, 102, 241, 0.4);
+}
+
+/* ── Stats Row ── */
+.stats-row {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px 6px;
+  justify-content: space-between;
+}
+
+.stat-card {
+  flex: 1;
+  background: #161b27;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.stat-value {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.stat-label {
+  margin: 2px 0 0;
+  font-size: 10px;
+  color: #64748b;
+}
+
+/* ── Filter Chips ── */
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.filter-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-chip {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 16px;
+  border-radius: 50px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-chip.active {
+  border-color: #818cf8;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 2px 14px rgba(99, 102, 241, 0.45);
+}
+
+.filter-chip-count {
+  margin-left: 2px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+/* ── Topper Grid ── */
+.topper-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+/* ── Section Labels ── */
+.section-label {
+  padding: 4px 16px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-label-count {
+  font-size: 12px;
+  color: #475569;
+}
+
+.section-label-live {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #22c55e;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+  display: inline-block;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #475569;
+}
+
+.empty-state-emoji {
+  font-size: 40px;
+  margin: 0 0 12px;
+}
+
+.empty-state-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.empty-state-sub {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* ── Exam Mode Badge ── */
+.exam-badge {
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  border: 1px solid;
+}
+
+.exam-badge-jee {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.35);
+  color: #818cf8;
+}
+
+.exam-badge-neet {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: rgba(14, 165, 233, 0.35);
+  color: #38bdf8;
+}
+
+/* ── Gift Button ── */
+.gift-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  color: #c084fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* ── Onboarding Modal ── */
+.onboarding-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+.onboarding-card {
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(180deg, #13192b 0%, #0d1117 100%);
+  border-radius: 28px;
+  padding: 32px 24px;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.8);
+}
+
+/* ── Primary Button ── */
+.btn-primary {
+  width: 100%;
+  padding: 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border: none;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4);
+  transition: all 0.2s;
+}
+
+.btn-primary:disabled {
+  background: rgba(99, 102, 241, 0.2);
+  color: #4c4f6b;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: 14px;
+  border-radius: 16px;
+  background: transparent;
+  border: 1.5px solid rgba(99, 102, 241, 0.3);
+  color: #818cf8;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-outline {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  background: #161b27;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+/* ── Card/Container shared ── */
+.card {
+  background: #161b27;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.card-gradient {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  border-radius: 18px;
+  padding: 16px 18px;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+/* ── Search ── */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #161b27;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 13px 16px;
+  transition: border-color 0.2s;
+}
+
+.search-bar.focused {
+  border-color: #6366f1;
+}
+
+.search-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  font-size: 15px;
+  outline: none;
+}
+
+.search-clear {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+/* ── Tags ── */
+.tag {
+  display: inline-block;
+  border-radius: 50px;
+  padding: 2px 8px;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.tag-iit {
+  background: rgba(99, 102, 241, 0.12);
+  color: #6366f1;
+}
+
+.tag-nit {
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+}
+
+.tag-aiims {
+  background: rgba(14, 165, 233, 0.12);
+  color: #0ea5e9;
+}
+
+/* ── Form Input ── */
+.form-input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #161b27;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.form-input-group.focused {
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.form-input-group input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  font-size: 15px;
+  font-weight: 600;
+  outline: none;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* ── Auth Toggle ── */
+.auth-toggle {
+  display: flex;
+  background: #161b27;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.auth-toggle button {
+  flex: 1;
+  padding: 9px;
+  border-radius: 9px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth-toggle button.active {
+  background: #6366f1;
+  color: #fff;
+}
+
+/* ── Menu List ── */
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: #161b27;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 12px 14px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.menu-item:hover {
+  background: #1e2535;
+}
+
+.menu-item-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.menu-item-label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.menu-item-sub {
+  margin: 1px 0 0;
+  font-size: 11px;
+  color: #475569;
+}
+
+/* ── Online dot ── */
+.online-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #22c55e;
+  border: 2px solid #0d1117;
+  box-shadow: 0 0 6px #22c55e;
+}
+
+.offline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #334155;
+  border: 2px solid #161b27;
+}
