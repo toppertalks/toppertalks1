@@ -20,6 +20,7 @@ import ProfilePage from './pages/ProfilePage.jsx';
 import WalletPage from './pages/WalletPage.jsx';
 import NotificationsPage from './pages/NotificationsPage.jsx';
 import TopperProfilePage from './pages/TopperProfilePage.jsx';
+import CallPage from './pages/CallPage.jsx';
 import BecomeMentorPage from './pages/BecomeMentorPage.jsx';
 import TopperDashboardPage from './pages/TopperDashboardPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
@@ -48,6 +49,7 @@ export default function App() {
         <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
         <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
         <Route path="/topperprofile/:id" element={<ProtectedRoute><TopperProfilePage /></ProtectedRoute>} />
+        <Route path="/call/:sessionId" element={<ProtectedRoute><CallPage /></ProtectedRoute>} />
         <Route path="/become-mentor" element={<ProtectedRoute><BecomeMentorPage /></ProtectedRoute>} />
         <Route path="/topper" element={<ProtectedRoute><TopperDashboardPage /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />

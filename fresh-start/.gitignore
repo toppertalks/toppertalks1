@@ -30,3 +30,6 @@ logs/
 # Alembic
 # (keep migrations directory; ignore local sqlite if any)
 *.sqlite3
+
+# LiveKit local dev config (contains api secret)
+livekit.yaml

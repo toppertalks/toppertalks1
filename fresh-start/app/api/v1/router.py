@@ -8,6 +8,7 @@ from app.api.v1.endpoints import (
     events,
     mentor,
     ratings,
+    rtc,
     sessions,
     toppers,
     user_profile,
@@ -28,3 +29,4 @@ api_router.include_router(ratings.router)
 api_router.include_router(user_profile.router)
 api_router.include_router(mentor.router)
 api_router.include_router(events.router)
+api_router.include_router(rtc.router)

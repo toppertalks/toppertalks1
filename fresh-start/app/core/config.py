@@ -70,6 +70,12 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: str = ""
     GOOGLE_REDIRECT_URI: str = "http://localhost:5173/oauth/google/callback"
 
+    # LiveKit (https://docs.livekit.io)
+    # Leave URL/KEY/SECRET blank in dev to disable real media; signaling still works.
+    LIVEKIT_URL: str = ""
+    LIVEKIT_API_KEY: str = ""
+    LIVEKIT_API_SECRET: str = ""
+
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
     def _split_csv(cls, v):

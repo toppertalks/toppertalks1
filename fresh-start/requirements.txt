@@ -16,3 +16,4 @@ email-validator
 pyotp
 python-dotenv
 httpx
+livekit-api

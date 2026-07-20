@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Star, Phone, Video, ChevronLeft, Clock, BookOpen, MessageCircle, CheckCircle, IndianRupee, Share2 } from "lucide-react";
+import { initiateCall } from "../lib/rtc.js";
 
 const TOPPERS = {
   "1": { id: "1", name: "Ananya Sharma", college: "IIT Bombay", tag: "IIT", rank: "AIR 427", exam: "JEE Advanced 2022", year: "3rd Year", branch: "B.Tech CS", subjects: ["Physics","Maths","Mechanics","Thermodynamics","Waves"], bio: "Hey! I cracked JEE Advanced in my first attempt with AIR 427. I scored 98.6 percentile in Maths and specialise in solving tricky Physics problems. I've helped 300+ students clear their doubts. Let's crack your exams together! 💪", rating: 4.9, totalSessions: 312, responseTime: 2, avatarUrl: "https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg", isOnline: true, reviews: [{ student: "Rahul G.", comment: "Explained Rotational Dynamics so clearly in 20 min. Highly recommend!", stars: 5, time: "2 days ago" },{ student: "Prerna S.", comment: "Patient and very knowledgeable. Cleared my Electrostatics doubt within minutes.", stars: 5, time: "4 days ago" },{ student: "Aditya K.", comment: "Best mentor for integration tricks. Will definitely book again.", stars: 4, time: "1 week ago" },{ student: "Nisha V.", comment: "Super helpful! Explained Thermodynamics with real exam context.", stars: 5, time: "1 week ago" }] },
@@ -17,6 +18,22 @@ export default function TopperProfilePage() {
   const { id } = useParams();
   const topper = TOPPERS[id] ?? TOPPERS["1"];
   const [activeTab, setActiveTab] = useState("about");
+  const [calling, setCalling] = useState(false);
+  const [callError, setCallError] = useState("");
+
+  async function startCall(mode) {
+    if (calling) return;
+    setCallError("");
+    setCalling(true);
+    try {
+      const r = await initiateCall(topper.id, mode);
+      navigate(`/call/${r.sessionId}?mode=${mode}`);
+    } catch (e) {
+      setCallError(e?.response?.data?.detail || "Could not start the call");
+    } finally {
+      setCalling(false);
+    }
+  }
   const tagColor = TAG_COLORS[topper.tag] ?? "#6366f1";
   const fullStars = Math.floor(topper.rating);
   const partialStar = topper.rating - fullStars;
@@ -131,10 +148,13 @@ export default function TopperProfilePage() {
       )}
 
       {/* Sticky Bottom CTA */}
-      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, padding: "16px 14px 24px", background: "linear-gradient(to top, #0d1117 70%, transparent)", display: "flex", gap: 10 }}>
-        <button onClick={() => navigate(`/messages/${topper.id}`)} style={{ width: 52, height: 52, borderRadius: 16, background: "#161b27", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#818cf8", cursor: "pointer", flexShrink: 0 }}><MessageCircle size={20} /></button>
-        <button onClick={() => navigate(`/messages/${topper.id}`)} style={{ flex: 1, padding: 15, borderRadius: 16, background: "linear-gradient(135deg,#22c55e,#16a34a)", border: "none", color: "#fff", fontSize: 15, fontWeight: 800, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, boxShadow: "0 6px 24px rgba(34,197,94,0.45)" }}><Phone size={18} /> Voice Call</button>
-        <button onClick={() => navigate(`/messages/${topper.id}`)} style={{ flex: 1, padding: 15, borderRadius: 16, background: "linear-gradient(135deg,#6366f1,#8b5cf6)", border: "none", color: "#fff", fontSize: 15, fontWeight: 800, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, boxShadow: "0 6px 24px rgba(99,102,241,0.45)" }}><Video size={18} /> Video Call</button>
+      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, padding: "16px 14px 24px", background: "linear-gradient(to top, #0d1117 70%, transparent)", display: "flex", flexDirection: "column", gap: 8 }}>
+        {callError && <div style={{ fontSize: 11, color: "#f87171", textAlign: "center" }}>{callError}</div>}
+        <div style={{ display: "flex", gap: 10 }}>
+          <button onClick={() => navigate(`/messages/${topper.id}`)} style={{ width: 52, height: 52, borderRadius: 16, background: "#161b27", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#818cf8", cursor: "pointer", flexShrink: 0 }}><MessageCircle size={20} /></button>
+          <button disabled={calling} onClick={() => startCall("voice")} style={{ flex: 1, padding: 15, borderRadius: 16, background: "linear-gradient(135deg,#22c55e,#16a34a)", border: "none", color: "#fff", fontSize: 15, fontWeight: 800, cursor: calling ? "wait" : "pointer", opacity: calling ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, boxShadow: "0 6px 24px rgba(34,197,94,0.45)" }}><Phone size={18} /> Voice Call</button>
+          <button disabled={calling} onClick={() => startCall("video")} style={{ flex: 1, padding: 15, borderRadius: 16, background: "linear-gradient(135deg,#6366f1,#8b5cf6)", border: "none", color: "#fff", fontSize: 15, fontWeight: 800, cursor: calling ? "wait" : "pointer", opacity: calling ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, boxShadow: "0 6px 24px rgba(99,102,241,0.45)" }}><Video size={18} /> Video Call</button>
+        </div>
       </div>
     </div>
   );
