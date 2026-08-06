@@ -60,7 +60,7 @@ jobs:
         image: postgres:16-alpine
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_PASSWORD: test_password_123
           POSTGRES_DB: toppertalks_test
         ports: ["5432:5432"]
         options: >-
@@ -79,9 +79,9 @@ jobs:
           --health-retries=5
 
     env:
-      DATABASE_URL: postgresql+asyncpg://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/toppertalks_test
+      DATABASE_URL: postgresql+asyncpg://postgres:test_password_123@localhost:5432/toppertalks_test
       REDIS_URL: redis://localhost:6379/0
-      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_PROJECT_ID: test_project_id
 
     steps:
       - uses: actions/checkout@v4

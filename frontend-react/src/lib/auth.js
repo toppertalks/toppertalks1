@@ -1,100 +1,133 @@
-// Firebase Auth has been removed. Replace with your chosen auth provider.
-// All functions below are stubs that throw errors until a real provider is wired in.
+import axios from "axios";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:4000";
+const AUTH_BASE = process.env.REACT_APP_AUTH_URL || "http://localhost:5000";
+const CSRF_COOKIE_NAME = "csrfToken";
+const CSRF_HEADER_NAME = "x-csrf-token";
+const AUTH_EVENT_NAME = "tt-auth-event";
 
-function _notConfigured(method) {
-  return Promise.reject(
-    new Error(`Auth not configured: '${method}' — replace Firebase Auth with your chosen auth provider.`)
-  );
+const authClient = axios.create({
+	baseURL: AUTH_BASE,
+	withCredentials: true,
+	headers: {
+		"Content-Type": "application/json",
+	},
+});
+
+const getCookie = (name) => {
+	const value = `; ${document.cookie}`;
+	const parts = value.split(`; ${name}=`);
+	if (parts.length === 2) return parts.pop().split(";").shift();
+	return null;
+};
+
+let accessToken = null;
+
+const dispatchAuthEvent = (detail) => {
+	if (typeof window !== "undefined") {
+		window.dispatchEvent(
+			new CustomEvent(AUTH_EVENT_NAME, {
+				detail,
+			}),
+		);
+	}
+};
+
+export function onAuthEvent(listener) {
+	if (typeof window === "undefined") {
+		return () => {};
+	}
+	window.addEventListener(AUTH_EVENT_NAME, listener);
+	return () => window.removeEventListener(AUTH_EVENT_NAME, listener);
 }
 
-export async function signInWithGoogle() {
-  return _notConfigured("signInWithGoogle");
+export function getAccessToken() {
+	return accessToken;
 }
 
-export async function getGoogleRedirectResult() {
-  return null;
+export function setAccessToken(token) {
+	accessToken = token;
+	return token;
 }
 
-export async function signUpWithEmail(_email, _password) {
-  return _notConfigured("signUpWithEmail");
+export function clearAuthState() {
+	accessToken = null;
+	dispatchAuthEvent({ type: "logout" });
 }
 
-export async function signInWithEmail(_email, _password) {
-  return _notConfigured("signInWithEmail");
+export async function signUpWithEmail(name, email, password) {
+	const response = await authClient.post("/api/auth/signup", {
+		name,
+		email,
+		password,
+	});
+	return response.data;
 }
 
-export async function sendPasswordReset(_email) {
-  return _notConfigured("sendPasswordReset");
-}
-
-export function setupRecaptcha(_buttonId) {
-  throw new Error("Auth not configured: setupRecaptcha");
-}
-
-export async function sendOTP(_phoneNumber) {
-  return _notConfigured("sendOTP");
-}
-
-export async function verifyOTP(_confirmation, _otp) {
-  return _notConfigured("verifyOTP");
-}
-
-// Profile management via API
-export async function saveUserProfile(user, profile) {
-  const token = localStorage.getItem("tt_auth_token");
-  if (!token) throw new Error("Not authenticated");
-  const res = await fetch(`${API_BASE}/api/user/profile`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      name: profile.name,
-      role: profile.role,
-      examMode: profile.examMode ?? "JEE",
-    }),
-  });
-  if (!res.ok) {
-    const data = await res.json();
-    throw new Error(data.detail ?? data.error ?? "Failed to save profile");
-  }
-}
-
-export async function getUserProfile(_uid) {
-  const token = localStorage.getItem("tt_auth_token");
-  if (!token) return null;
-  const res = await fetch(`${API_BASE}/api/user/profile`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) return null;
-  return (await res.json()) ?? null;
+export async function signInWithEmail(email, password) {
+	const response = await authClient.post("/api/auth/login", {
+		email,
+		password,
+	});
+	const payload = response.data?.data;
+	if (payload?.accessToken) {
+		setAccessToken(payload.accessToken);
+	}
+	return payload;
 }
 
 export async function signOut() {
-  localStorage.removeItem("tt_auth_token");
-  localStorage.removeItem("tt_user_uid");
-  localStorage.removeItem("tt_user_name");
-  localStorage.removeItem("tt_user_role");
-  localStorage.removeItem("tt_exam_mode");
+	try {
+		const csrfToken = getCookie(CSRF_COOKIE_NAME);
+		await authClient.post("/api/auth/logout", null, {
+			headers: csrfToken ? { [CSRF_HEADER_NAME]: csrfToken } : undefined,
+		});
+	} catch (_) {
+		// clear session even if logout call fails
+	} finally {
+		clearAuthState();
+	}
 }
 
-export function onAuthChange(_callback) {
-  // No real-time auth state listener without Firebase.
-  // Call callback with null immediately to indicate signed-out state.
-  _callback(null);
-  return () => {};
+export async function refresh() {
+	const csrfToken = getCookie(CSRF_COOKIE_NAME);
+	const response = await authClient.post("/api/auth/refresh", null, {
+		headers: csrfToken ? { [CSRF_HEADER_NAME]: csrfToken } : undefined,
+	});
+	const payload = response.data?.data;
+	if (payload?.accessToken) {
+		setAccessToken(payload.accessToken);
+	}
+	return payload;
 }
 
-export function getCurrentUser() {
-  const uid = localStorage.getItem("tt_user_uid");
-  if (!uid) return null;
-  return {
-    uid,
-    displayName: localStorage.getItem("tt_user_name") ?? null,
-    email: null,
-    getIdToken: () => Promise.resolve(localStorage.getItem("tt_auth_token") ?? ""),
-  };
+export async function verifyEmail(token, email) {
+	return authClient.get("/api/auth/verify-email", {
+		params: { token, email },
+	});
+}
+
+export async function sendPasswordReset(email) {
+	return authClient.post("/api/auth/request-password-reset", {
+		email,
+	});
+}
+
+export async function resetPassword(token, email, password) {
+	return authClient.post("/api/auth/reset-password", {
+		token,
+		email,
+		password,
+	});
+}
+
+export async function fetchProfile() {
+	const response = await axios.get(`${API_BASE}/api/user/profile`, {
+		withCredentials: true,
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
+		},
+	});
+	return response.data?.data;
 }
