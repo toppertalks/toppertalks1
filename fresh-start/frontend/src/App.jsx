@@ -24,7 +24,13 @@ import CallPage from './pages/CallPage.jsx';
 import BecomeMentorPage from './pages/BecomeMentorPage.jsx';
 import TopperDashboardPage from './pages/TopperDashboardPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
-import LegalPage from './pages/LegalPage.jsx';
+import ComplianceHubPage from './pages/ComplianceHubPage.jsx';
+import AboutPage from './pages/AboutPage.jsx';
+import ContactPage from './pages/ContactPage.jsx';
+import PricingPage from './pages/PricingPage.jsx';
+import TermsPage from './pages/TermsPage.jsx';
+import PrivacyPage from './pages/PrivacyPage.jsx';
+import RefundPolicyPage from './pages/RefundPolicyPage.jsx';
 
 export default function App() {
   const { loading } = useAuth();
@@ -38,7 +44,13 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/oauth/google/callback" element={<GoogleCallbackPage />} />
-        <Route path="/legal" element={<LegalPage />} />
+        <Route path="/legal" element={<ComplianceHubPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/refund-policy" element={<RefundPolicyPage />} />
         <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />

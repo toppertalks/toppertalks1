@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import PublicComplianceLinks from '../components/PublicComplianceLinks';
 import { authApi } from '../lib/api';
 
 export default function ForgotPasswordPage() {
@@ -63,6 +64,8 @@ export default function ForgotPasswordPage() {
         <p style={{ marginTop: 18, fontSize: 14, color: '#6b7280' }}>
           <Link to="/login">Back to sign in</Link>
         </p>
+
+        <PublicComplianceLinks compact label="Policies" />
       </div>
     </div>
   );

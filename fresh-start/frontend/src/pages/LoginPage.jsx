@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import GoogleSignInButton from '../components/GoogleSignInButton';
+import PublicComplianceLinks from '../components/PublicComplianceLinks';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
@@ -93,6 +94,8 @@ export default function LoginPage() {
         <p style={{ marginTop: 6, fontSize: 14, color: '#6b7280' }}>
           No account? <Link to="/register">Create one</Link>
         </p>
+
+        <PublicComplianceLinks compact label="Policies" />
       </div>
     </div>
   );

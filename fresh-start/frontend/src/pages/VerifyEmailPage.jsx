@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import PublicComplianceLinks from '../components/PublicComplianceLinks';
 import { authApi } from '../lib/api';
 
 const OTP_LENGTH = 6;
@@ -217,6 +218,8 @@ export default function VerifyEmailPage() {
             {cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend code'}
           </button>
         </div>
+
+        <PublicComplianceLinks compact label="Policies" />
 
         <p style={{ marginTop: 18, fontSize: 14, color: '#6b7280' }}>
           <Link to="/login">Back to sign in</Link>
