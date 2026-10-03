@@ -57,13 +57,9 @@ class Settings(BaseSettings):
     EMAIL_VERIFY_TOKEN_EXPIRE_HOURS: int = 24
     PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = 30
 
-    # SMTP (leave SMTP_HOST blank to log emails to the console in dev)
-    SMTP_HOST: str = ""
-    SMTP_PORT: int = 587
-    SMTP_USER: str = ""
-    SMTP_PASSWORD: str = ""
-    SMTP_FROM: str = "no-reply@toppertalks.local"
-    SMTP_USE_TLS: bool = True
+    # Email - Resend
+    RESEND_API_KEY: str = ""
+    EMAIL_FROM: str = ""
 
     # Google OAuth
     GOOGLE_CLIENT_ID: str = ""

@@ -1,30 +1,22 @@
 from __future__ import annotations
 
 import logging
-import smtplib
-from email.message import EmailMessage
 from typing import Optional
+
+import httpx
 
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-
-def _send_via_smtp(message: EmailMessage) -> None:
-    with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=15) as smtp:
-        if settings.SMTP_USE_TLS:
-            smtp.starttls()
-        if settings.SMTP_USER:
-            smtp.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
-        smtp.send_message(message)
+RESEND_API_URL = "https://api.resend.com/emails"
 
 
 def send_email(*, to: str, subject: str, body: str, html: Optional[str] = None) -> None:
     """
-    Send an email. If SMTP_HOST is empty, the email is logged to stdout so you
-    can grab verification / reset links during local development.
+    Send an email using the Resend API.
     """
-    if not settings.SMTP_HOST:
+    if not settings.RESEND_API_KEY:
         logger.warning(
             "\n--- DEV EMAIL ---\nTo: %s\nSubject: %s\n\n%s\n-----------------",
             to,
@@ -33,16 +25,28 @@ def send_email(*, to: str, subject: str, body: str, html: Optional[str] = None) 
         )
         return
 
-    msg = EmailMessage()
-    msg["From"] = settings.SMTP_FROM
-    msg["To"] = to
-    msg["Subject"] = subject
-    msg.set_content(body)
+    payload = {
+        "from": settings.EMAIL_FROM,
+        "to": [to],
+        "subject": subject,
+        "text": body,
+    }
     if html:
-        msg.add_alternative(html, subtype="html")
+        payload["html"] = html
+
+    headers = {
+        "Authorization": f"Bearer {settings.RESEND_API_KEY}",
+        "Content-Type": "application/json",
+    }
 
     try:
-        _send_via_smtp(msg)
+        response = httpx.post(
+            RESEND_API_URL,
+            headers=headers,
+            json=payload,
+            timeout=15.0,
+        )
+        response.raise_for_status()
     except Exception:
         logger.exception("Failed to send email to %s", to)
 
